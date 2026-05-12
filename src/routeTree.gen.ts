@@ -13,9 +13,13 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiGenerateCaseRouteImport } from './routes/api/generate-case'
+import { Route as ApiDebriefRouteImport } from './routes/api/debrief'
+import { Route as ApiCoachRouteImport } from './routes/api/coach'
 import { Route as AuthenticatedSessionsRouteImport } from './routes/_authenticated/sessions'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCasesRouteImport } from './routes/_authenticated/cases'
+import { Route as AuthenticatedSessionsSessionIdRouteImport } from './routes/_authenticated/sessions.$sessionId'
 import { Route as AuthenticatedCasesNewRouteImport } from './routes/_authenticated/cases.new'
 import { Route as AuthenticatedCasesCaseIdRouteImport } from './routes/_authenticated/cases.$caseId'
 
@@ -38,6 +42,21 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiGenerateCaseRoute = ApiGenerateCaseRouteImport.update({
+  id: '/api/generate-case',
+  path: '/api/generate-case',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDebriefRoute = ApiDebriefRouteImport.update({
+  id: '/api/debrief',
+  path: '/api/debrief',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCoachRoute = ApiCoachRouteImport.update({
+  id: '/api/coach',
+  path: '/api/coach',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedSessionsRoute = AuthenticatedSessionsRouteImport.update({
   id: '/sessions',
   path: '/sessions',
@@ -53,6 +72,12 @@ const AuthenticatedCasesRoute = AuthenticatedCasesRouteImport.update({
   path: '/cases',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedSessionsSessionIdRoute =
+  AuthenticatedSessionsSessionIdRouteImport.update({
+    id: '/$sessionId',
+    path: '/$sessionId',
+    getParentRoute: () => AuthenticatedSessionsRoute,
+  } as any)
 const AuthenticatedCasesNewRoute = AuthenticatedCasesNewRouteImport.update({
   id: '/new',
   path: '/new',
@@ -71,9 +96,13 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/cases': typeof AuthenticatedCasesRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/sessions': typeof AuthenticatedSessionsRoute
+  '/sessions': typeof AuthenticatedSessionsRouteWithChildren
+  '/api/coach': typeof ApiCoachRoute
+  '/api/debrief': typeof ApiDebriefRoute
+  '/api/generate-case': typeof ApiGenerateCaseRoute
   '/cases/$caseId': typeof AuthenticatedCasesCaseIdRoute
   '/cases/new': typeof AuthenticatedCasesNewRoute
+  '/sessions/$sessionId': typeof AuthenticatedSessionsSessionIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -81,9 +110,13 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/cases': typeof AuthenticatedCasesRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/sessions': typeof AuthenticatedSessionsRoute
+  '/sessions': typeof AuthenticatedSessionsRouteWithChildren
+  '/api/coach': typeof ApiCoachRoute
+  '/api/debrief': typeof ApiDebriefRoute
+  '/api/generate-case': typeof ApiGenerateCaseRoute
   '/cases/$caseId': typeof AuthenticatedCasesCaseIdRoute
   '/cases/new': typeof AuthenticatedCasesNewRoute
+  '/sessions/$sessionId': typeof AuthenticatedSessionsSessionIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -93,9 +126,13 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/_authenticated/cases': typeof AuthenticatedCasesRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
-  '/_authenticated/sessions': typeof AuthenticatedSessionsRoute
+  '/_authenticated/sessions': typeof AuthenticatedSessionsRouteWithChildren
+  '/api/coach': typeof ApiCoachRoute
+  '/api/debrief': typeof ApiDebriefRoute
+  '/api/generate-case': typeof ApiGenerateCaseRoute
   '/_authenticated/cases/$caseId': typeof AuthenticatedCasesCaseIdRoute
   '/_authenticated/cases/new': typeof AuthenticatedCasesNewRoute
+  '/_authenticated/sessions/$sessionId': typeof AuthenticatedSessionsSessionIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -106,8 +143,12 @@ export interface FileRouteTypes {
     | '/cases'
     | '/dashboard'
     | '/sessions'
+    | '/api/coach'
+    | '/api/debrief'
+    | '/api/generate-case'
     | '/cases/$caseId'
     | '/cases/new'
+    | '/sessions/$sessionId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -116,8 +157,12 @@ export interface FileRouteTypes {
     | '/cases'
     | '/dashboard'
     | '/sessions'
+    | '/api/coach'
+    | '/api/debrief'
+    | '/api/generate-case'
     | '/cases/$caseId'
     | '/cases/new'
+    | '/sessions/$sessionId'
   id:
     | '__root__'
     | '/'
@@ -127,8 +172,12 @@ export interface FileRouteTypes {
     | '/_authenticated/cases'
     | '/_authenticated/dashboard'
     | '/_authenticated/sessions'
+    | '/api/coach'
+    | '/api/debrief'
+    | '/api/generate-case'
     | '/_authenticated/cases/$caseId'
     | '/_authenticated/cases/new'
+    | '/_authenticated/sessions/$sessionId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -136,6 +185,9 @@ export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
+  ApiCoachRoute: typeof ApiCoachRoute
+  ApiDebriefRoute: typeof ApiDebriefRoute
+  ApiGenerateCaseRoute: typeof ApiGenerateCaseRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -168,6 +220,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/generate-case': {
+      id: '/api/generate-case'
+      path: '/api/generate-case'
+      fullPath: '/api/generate-case'
+      preLoaderRoute: typeof ApiGenerateCaseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/debrief': {
+      id: '/api/debrief'
+      path: '/api/debrief'
+      fullPath: '/api/debrief'
+      preLoaderRoute: typeof ApiDebriefRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/coach': {
+      id: '/api/coach'
+      path: '/api/coach'
+      fullPath: '/api/coach'
+      preLoaderRoute: typeof ApiCoachRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/sessions': {
       id: '/_authenticated/sessions'
       path: '/sessions'
@@ -188,6 +261,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/cases'
       preLoaderRoute: typeof AuthenticatedCasesRouteImport
       parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/sessions/$sessionId': {
+      id: '/_authenticated/sessions/$sessionId'
+      path: '/$sessionId'
+      fullPath: '/sessions/$sessionId'
+      preLoaderRoute: typeof AuthenticatedSessionsSessionIdRouteImport
+      parentRoute: typeof AuthenticatedSessionsRoute
     }
     '/_authenticated/cases/new': {
       id: '/_authenticated/cases/new'
@@ -219,16 +299,29 @@ const AuthenticatedCasesRouteChildren: AuthenticatedCasesRouteChildren = {
 const AuthenticatedCasesRouteWithChildren =
   AuthenticatedCasesRoute._addFileChildren(AuthenticatedCasesRouteChildren)
 
+interface AuthenticatedSessionsRouteChildren {
+  AuthenticatedSessionsSessionIdRoute: typeof AuthenticatedSessionsSessionIdRoute
+}
+
+const AuthenticatedSessionsRouteChildren: AuthenticatedSessionsRouteChildren = {
+  AuthenticatedSessionsSessionIdRoute: AuthenticatedSessionsSessionIdRoute,
+}
+
+const AuthenticatedSessionsRouteWithChildren =
+  AuthenticatedSessionsRoute._addFileChildren(
+    AuthenticatedSessionsRouteChildren,
+  )
+
 interface AuthenticatedRouteChildren {
   AuthenticatedCasesRoute: typeof AuthenticatedCasesRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
-  AuthenticatedSessionsRoute: typeof AuthenticatedSessionsRoute
+  AuthenticatedSessionsRoute: typeof AuthenticatedSessionsRouteWithChildren
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCasesRoute: AuthenticatedCasesRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
-  AuthenticatedSessionsRoute: AuthenticatedSessionsRoute,
+  AuthenticatedSessionsRoute: AuthenticatedSessionsRouteWithChildren,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -240,6 +333,9 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
+  ApiCoachRoute: ApiCoachRoute,
+  ApiDebriefRoute: ApiDebriefRoute,
+  ApiGenerateCaseRoute: ApiGenerateCaseRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

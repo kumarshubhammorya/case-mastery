@@ -41,7 +41,7 @@ function SignupPage() {
 
   const onGoogle = async () => {
     const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/dashboard" });
-    if ((r as any).error) toast.error(typeof r.error === "string" ? r.error : ((r as any).error as Error).message ?? "Sign-up failed");
+    if ((r as any).error) toast.error(typeof (r as any).error === "string" ? (r as any).error : ((r as any).error as Error).message ?? "Sign-up failed");
   };
 
   return (
