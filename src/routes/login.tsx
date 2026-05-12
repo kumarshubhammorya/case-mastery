@@ -1,7 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +12,10 @@ export const Route = createFileRoute("/login")({
   component: LoginPage,
   head: () => ({ meta: [{ title: "Log in — CaseCoach" }, { name: "description", content: "Log in to CaseCoach." }] }),
 });
+
+function getAuthRedirectUrl() {
+  return `${window.location.origin}/dashboard`;
+}
 
 function LoginPage() {
   const nav = useNavigate();
@@ -33,8 +36,16 @@ function LoginPage() {
   };
 
   const onGoogle = async () => {
-    const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/dashboard" });
-    if ((r as any).error) toast.error(typeof (r as any).error === "string" ? (r as any).error : ((r as any).error as Error).message ?? "Sign-in failed");
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: getAuthRedirectUrl(),
+        queryParams: {
+          prompt: "select_account",
+        },
+      },
+    });
+    if (error) toast.error(error.message || "Google sign-in failed");
   };
 
   return (
