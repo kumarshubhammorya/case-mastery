@@ -1,7 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,6 +11,10 @@ export const Route = createFileRoute("/signup")({
   component: SignupPage,
   head: () => ({ meta: [{ title: "Sign up — CaseCoach" }, { name: "description", content: "Create your CaseCoach account." }] }),
 });
+
+function getAuthRedirectUrl() {
+  return `${window.location.origin}/dashboard`;
+}
 
 function SignupPage() {
   const nav = useNavigate();
@@ -30,7 +33,7 @@ function SignupPage() {
       email, password,
       options: {
         data: { name },
-        emailRedirectTo: `${window.location.origin}/dashboard`,
+        emailRedirectTo: getAuthRedirectUrl(),
       },
     });
     setLoading(false);
@@ -40,8 +43,16 @@ function SignupPage() {
   };
 
   const onGoogle = async () => {
-    const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/dashboard" });
-    if ((r as any).error) toast.error(typeof (r as any).error === "string" ? (r as any).error : ((r as any).error as Error).message ?? "Sign-up failed");
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: getAuthRedirectUrl(),
+        queryParams: {
+          prompt: "select_account",
+        },
+      },
+    });
+    if (error) toast.error(error.message || "Google sign-up failed");
   };
 
   return (
