@@ -14,7 +14,185 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      cases: {
+        Row: {
+          created_at: string
+          difficulty: string
+          exhibits: Json
+          id: string
+          industry: string | null
+          owner_id: string | null
+          prompt: string
+          source: string
+          title: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          difficulty?: string
+          exhibits?: Json
+          id?: string
+          industry?: string | null
+          owner_id?: string | null
+          prompt: string
+          source?: string
+          title: string
+          type: string
+        }
+        Update: {
+          created_at?: string
+          difficulty?: string
+          exhibits?: Json
+          id?: string
+          industry?: string | null
+          owner_id?: string | null
+          prompt?: string
+          source?: string
+          title?: string
+          type?: string
+        }
+        Relationships: []
+      }
+      frameworks: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          slug: string
+          structure: Json
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          slug: string
+          structure?: Json
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          slug?: string
+          structure?: Json
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          role: string
+          session_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          role: string
+          session_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          role?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          id: string
+          name: string | null
+          school: string | null
+          target_industry: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          name?: string | null
+          school?: string | null
+          target_industry?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string | null
+          school?: string | null
+          target_industry?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      sessions: {
+        Row: {
+          case_id: string
+          completed_at: string | null
+          debrief: Json | null
+          framework_id: string | null
+          id: string
+          started_at: string
+          status: string
+          updated_at: string
+          user_id: string
+          workspace_state: Json
+        }
+        Insert: {
+          case_id: string
+          completed_at?: string | null
+          debrief?: Json | null
+          framework_id?: string | null
+          id?: string
+          started_at?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+          workspace_state?: Json
+        }
+        Update: {
+          case_id?: string
+          completed_at?: string | null
+          debrief?: Json | null
+          framework_id?: string | null
+          id?: string
+          started_at?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+          workspace_state?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sessions_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sessions_framework_id_fkey"
+            columns: ["framework_id"]
+            isOneToOne: false
+            referencedRelation: "frameworks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
