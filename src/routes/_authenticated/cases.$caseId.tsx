@@ -21,9 +21,23 @@ function CaseDetail() {
     supabase.from("frameworks").select("id,name").then(({ data }) => { setFrameworks(data ?? []); if (data?.[0]) setFw(data[0].id); });
   }, [caseId]);
 
+  const [starting, setStarting] = useState(false);
   const start = async () => {
-    const { data, error } = await supabase.from("sessions").insert({ user_id: user!.id, case_id: caseId, framework_id: fw, workspace_state: {} }).select().single();
-    if (error) return alert(error.message);
+    if (starting) return;
+    if (!user) { toast.error("Please sign in to start a session."); return; }
+    if (!fw) { toast.error("Pick a framework first."); return; }
+    setStarting(true);
+    const { data, error } = await supabase
+      .from("sessions")
+      .insert({ user_id: user.id, case_id: caseId, framework_id: fw, workspace_state: {} })
+      .select()
+      .single();
+    if (error || !data) {
+      console.error("[start session]", error);
+      toast.error(error?.message ?? "Failed to start session");
+      setStarting(false);
+      return;
+    }
     nav({ to: "/sessions/$sessionId", params: { sessionId: data.id } });
   };
 
